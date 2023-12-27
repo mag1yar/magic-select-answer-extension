@@ -1,19 +1,52 @@
-// If your extension doesn't need a content script, just leave this file empty
+import { answers } from '../answers';
 
-// This is an example of a script that will run on every page. This can alter pages
-// Don't forget to change `matches` in manifest.json if you want to only change specific webpages
-printAllPageLinks();
+execute();
 
-// This needs to be an export due to typescript implementation limitation of needing '--isolatedModules' tsconfig
-export function printAllPageLinks() {
-  const allLinks = Array.from(document.querySelectorAll('a')).map(
-    link => link.href
-  );
+export function execute() {
+  const newDiv = createNewDiv();
+  document.addEventListener('selectionchange', handleSelectionChange);
 
-  console.log('-'.repeat(30));
-  console.log(
-    `These are all ${allLinks.length} links on the current page that have been printed by the Sample Create React Extension`
-  );
-  console.log(allLinks);
-  console.log('-'.repeat(30));
+  function createNewDiv() {
+    const div = document.createElement('div');
+    div.style.position = 'absolute';
+    div.style.bottom = '0';
+    div.style.right = '0';
+    div.style.background = 'white';
+    div.style.padding = '2px';
+    div.style.zIndex = '9999';
+    document.body.appendChild(div);
+    return div;
+  }
+
+  function handleSelectionChange() {
+    const selectedText = window.getSelection().toString();
+
+    // Проверка, что выделенный текст не пустой
+    if (selectedText) {
+      const answer = findAnswer(selectedText);
+      showTextOverlay(answer);
+    } else {
+      hideTextOverlay();
+    }
+  }
+
+  function findAnswer(selectedText) {
+    // Поиск ответа по ключевым словам в вопросах
+    for (const key in answers) {
+      const question = answers[key].q.toLowerCase();
+      if (question.includes(selectedText.toLowerCase())) {
+        return answers[key].a;
+      }
+    }
+    return '';
+  }
+
+  function showTextOverlay(selectedText) {
+    newDiv.innerText = selectedText;
+    newDiv.style.display = 'block';
+  }
+
+  function hideTextOverlay() {
+    newDiv.style.display = 'none';
+  }
 }

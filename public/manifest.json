@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
   "version": "0.0.1",
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "description": "Sample application showing how to create an extension with Create React App",
+  "short_name": "Magic Select",
+  "name": "Magic Select Answer",
+  "description": "Just an extension for you",
   "browser_action": {
     "default_title": "CRE",
     "default_popup": "popup.html"
